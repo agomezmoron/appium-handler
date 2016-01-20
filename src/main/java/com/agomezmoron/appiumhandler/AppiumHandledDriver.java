@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -76,6 +77,11 @@ public class AppiumHandledDriver {
     private static String APP_KEY = "app";
 
     /**
+     * Key to be used in the {@link DesiredCapabilities} checking.
+     */
+    private static String APP_HYBRID = "appHybrid";
+
+    /**
      * Involved instance (decorator pattern).
      */
     private AppiumDriver<MobileElement> driver;
@@ -101,16 +107,37 @@ public class AppiumHandledDriver {
             }
         }
 
+        AppiumDriver<MobileElement> driver = null;
+
         // building the instance
         if (isIOS(desiredCapabilities)) {
-            instance = new AppiumHandledDriver(new IOSDriver<MobileElement>(remoteAddress, desiredCapabilities));
+            driver = new IOSDriver<MobileElement>(remoteAddress, desiredCapabilities);
         } else if (isAndroid(desiredCapabilities)) {
-            instance = new AppiumHandledDriver(new AndroidDriver<MobileElement>(remoteAddress, desiredCapabilities));
+            driver = new AndroidDriver<MobileElement>(remoteAddress, desiredCapabilities);
         } else {
             // TODO: work on it. Nowadays just iOS and android are supported by this handler.
-            instance = new AppiumHandledDriver(new AndroidDriver<MobileElement>(remoteAddress, desiredCapabilities));
+            driver = new AndroidDriver<MobileElement>(remoteAddress, desiredCapabilities);
         }
 
+        // implicit wait for slow devices
+        driver.manage().timeouts().implicitlyWait(35, TimeUnit.SECONDS);
+
+        Object appHybrid = desiredCapabilities.getCapability(APP_HYBRID);
+        if (appHybrid != null && appHybrid instanceof Boolean) {
+            Boolean isHybrid = (Boolean) appHybrid;
+            if (isHybrid) {
+                sleepFor(15);
+                // for HYBRID APPS, switching the context
+                Set<String> contextHandles = driver.getContextHandles();
+                for (String context : contextHandles) {
+                    if (context.contains("WEBVIEW")) {
+                        driver.context(context);
+                    }
+                }
+            }
+        }
+        // now the driver is configured, we create the wrapper
+        instance = new AppiumHandledDriver(driver);
         return instance;
     }
 
@@ -218,6 +245,30 @@ public class AppiumHandledDriver {
         long start = new Date().getTime();
         try {
             driver.wait(seconds * 1000);
+        } catch (InterruptedException e) {
+            long end = new Date().getTime();
+            do {
+                end = new Date().getTime();
+            } while ((start + (seconds * 1000)) > end);
+        }
+    }
+
+    /**
+     * It sleeps the process for n seconds.
+     * @param seconds to be slept.
+     */
+    public void sleep(long seconds) {
+        sleepFor(seconds);
+    }
+
+    /**
+     * It sleeps the process for n seconds.
+     * @param seconds to be slept.
+     */
+    public static void sleepFor(long seconds) {
+        long start = new Date().getTime();
+        try {
+            Thread.sleep(seconds * 1000);
         } catch (InterruptedException e) {
             long end = new Date().getTime();
             do {
