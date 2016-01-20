@@ -88,6 +88,11 @@ public class AppiumHandledDriver {
     private AppiumDriver<MobileElement> driver;
 
     /**
+     * Flag to know if we're testing an hybrid app.
+     */
+    private boolean isAnHybridApp;
+
+    /**
      * Builder method to create {@link AppiumHandledDriver} instances.
      * @param remoteAddress to be used.
      * @param desiredCapabilities to be used.
@@ -122,31 +127,79 @@ public class AppiumHandledDriver {
 
         // implicit wait for slow devices
         driver.manage().timeouts().implicitlyWait(35, TimeUnit.SECONDS);
-
+        Boolean isHybrid = false;
         Object appHybrid = desiredCapabilities.getCapability(APP_HYBRID);
         if (appHybrid != null && appHybrid instanceof Boolean) {
-            Boolean isHybrid = (Boolean) appHybrid;
+            isHybrid = (Boolean) appHybrid;
             if (isHybrid) {
-                sleepFor(15);
-                // for HYBRID APPS, switching the context
-                Set<String> contextHandles = driver.getContextHandles();
-                for (String context : contextHandles) {
-                    if (context.contains("WEBVIEW")) {
-                        driver.context(context);
-                    }
-                }
+                // if the app is hybrid, we have to wait until the WEBVIEW context handler exists
+                driver = switchToWebViewContext(driver);
             }
         }
         // now the driver is configured, we create the wrapper
-        instance = new AppiumHandledDriver(driver);
+        instance = new AppiumHandledDriver(driver, isHybrid);
         return instance;
     }
 
     /**
-     * Private constructor to avoid instances creation without using the buildInstance method.
+     * This method switches to webview context (for hybrid apps).
+     * @param driver to be switched to.
+     * @param 
+     * @return modified driver instance.
      */
-    private AppiumHandledDriver(AppiumDriver<MobileElement> driver) {
+    private static AppiumDriver<MobileElement> switchToWebViewContext(AppiumDriver<MobileElement> driver) {
+        long start = new Date().getTime();
+        long end = new Date().getTime();
+        long limit = 15; // waiting no more than 15 seconds to switch to a WEBVIEW context
+        boolean switched = false;
+        // for HYBRID APPS, switching the context
+        do {
+            sleepFor(1);
+            Set<String> contextHandles = driver.getContextHandles();
+            for (String context : contextHandles) {
+                if (context.contains("WEBVIEW")) {
+                    driver.context(context);
+                    switched = true;
+                }
+            }
+            end = new Date().getTime();
+        } while (!switched && (start + (limit * 1000)) > end);
+
+        if (!switched) {
+            LOGGER.error("After waiting for " + limit
+                    + " seconds, the driver couldn't switched to the WEBVIEW context, so the test of the hybrid application will failed!");
+        }
+        return driver;
+    }
+
+    /**
+     * Method to know if the driver is ready to test hybrid / native apps.
+     * @return true if the driver is well configured or false otherwise.
+     */
+    public boolean isDriverReadyToTest() {
+        boolean ready = false;
+        if (this.driver != null) {
+            if (this.isAnHybridApp) {
+                if (this.getContext().contains("WEBVIEW")) {
+                    ready = true;
+                }
+            } else {
+                if (!this.getContext().contains("WEBVIEW")) {
+                    ready = true;
+                }
+            }
+        }
+        return ready;
+    }
+
+    /**
+     * Private constructor to avoid instances creation without using the buildInstance method.
+     * @param driver an {@link AppiumDriver} instance.
+     * @param isHybrid flag to know if it's an hybrid app.
+     */
+    private AppiumHandledDriver(AppiumDriver<MobileElement> driver, Boolean isHybridApp) {
         this.driver = driver;
+        this.isAnHybridApp = isHybridApp;
     }
 
     /**
