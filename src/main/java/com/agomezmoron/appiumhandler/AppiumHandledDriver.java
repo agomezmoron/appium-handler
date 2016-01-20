@@ -161,7 +161,7 @@ public class AppiumHandledDriver {
                     driver.context(context);
                     // the context change needs some extra time
                     do {
-                        sleepFor(1);
+                        sleepFor(5);
                     } while (driver.getContext().contains("WEBVIEW"));
                     switched = true;
                 }
