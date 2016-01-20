@@ -13,11 +13,9 @@
 		</license>
 	</licenses>
 
-
 	<prerequisites>
 		<maven>3.1.1</maven>
 	</prerequisites>
-
 
 	<scm>
 		<url>https://github.com/agomezmoron/appium-handler.git</url>
