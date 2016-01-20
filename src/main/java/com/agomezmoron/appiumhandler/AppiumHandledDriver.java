@@ -42,6 +42,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.google.gson.JsonObject;
 
@@ -707,6 +708,13 @@ public class AppiumHandledDriver {
      */
     public URL getRemoteAddress() {
         return driver.getRemoteAddress();
+    }
+
+    /**
+     * @see {@link RemoteWebDriver#quit()}.
+     */
+    public void quit() {
+        driver.quit();
     }
 
 }
