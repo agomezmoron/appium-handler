@@ -32,12 +32,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.TargetLocator;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -81,6 +83,11 @@ public class AppiumHandledDriver {
      * Key to be used in the {@link DesiredCapabilities} checking.
      */
     private static String APP_HYBRID = "appHybrid";
+
+    /**
+     * Parameter to have always the main window.
+     */
+    private String mainWindow;
 
     /**
      * Involved instance (decorator pattern).
@@ -158,11 +165,11 @@ public class AppiumHandledDriver {
             Set<String> contextHandles = driver.getContextHandles();
             for (String context : contextHandles) {
                 if (context.contains("WEBVIEW")) {
-                    driver.context(context);
                     // the context change needs some extra time
                     do {
                         sleepFor(5);
-                    } while (driver.getContext().contains("WEBVIEW"));
+                        driver.context(context);
+                    } while (!driver.getContext().contains("WEBVIEW"));
                     switched = true;
                 }
             }
@@ -204,6 +211,17 @@ public class AppiumHandledDriver {
     private AppiumHandledDriver(AppiumDriver<MobileElement> driver, Boolean isHybridApp) {
         this.driver = driver;
         this.isAnHybridApp = isHybridApp;
+        this.mainWindow = this.driver.getWindowHandle();
+    }
+
+    /**
+     * It switches to the main window if it's an hybrid app.
+     */
+    public void switchToMainWindow() {
+        if (this.isAnHybridApp && StringUtils.isNotBlank(this.mainWindow)
+                && !this.driver.getWindowHandle().equals(this.mainWindow)) {
+            this.driver.switchTo().window(this.mainWindow);
+        }
     }
 
     /**
@@ -772,6 +790,27 @@ public class AppiumHandledDriver {
      */
     public void quit() {
         driver.quit();
+    }
+
+    /**
+     * @see {@link RemoteWebDriver#getWindowHandles()}
+     */
+    public Set<String> getWindowHandles() {
+        return driver.getWindowHandles();
+    }
+
+    /**
+     * @see {@link RemoteWebDriver#switchTo()}
+     */
+    public TargetLocator switchTo() {
+        return driver.switchTo();
+    }
+
+    /**
+     * @see {@link RemoteWebDriver#getWindowHandle()}
+     */
+    public String getWindowHandle() {
+        return driver.getWindowHandle();
     }
 
 }
