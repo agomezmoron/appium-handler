@@ -175,6 +175,7 @@ public class AppiumHandledDriver {
                         } catch (Exception ex) {
                             LOGGER.warn("An error occurred switching the context. Trying again...");
                         }
+                        retries++;
                     } while (!driver.getContext().contains("WEBVIEW") && retries < maxRetries);
                     switched = true;
                 }
