@@ -159,6 +159,7 @@ public class AppiumHandledDriver {
         long end = new Date().getTime();
         long limit = 15; // waiting no more than 15 seconds to switch to a WEBVIEW context
         boolean switched = false;
+        int maxRetries = 5;
         // for HYBRID APPS, switching the context
         do {
             sleepFor(1);
@@ -166,10 +167,15 @@ public class AppiumHandledDriver {
             for (String context : contextHandles) {
                 if (context.contains("WEBVIEW")) {
                     // the context change needs some extra time
+                    int retries = 0;
                     do {
                         sleepFor(5);
-                        driver.context(context);
-                    } while (!driver.getContext().contains("WEBVIEW"));
+                        try {
+                            driver.context(context);
+                        } catch (Exception ex) {
+                            LOGGER.warn("An error occurred switching the context. Trying again...");
+                        }
+                    } while (!driver.getContext().contains("WEBVIEW") && retries < maxRetries);
                     switched = true;
                 }
             }
