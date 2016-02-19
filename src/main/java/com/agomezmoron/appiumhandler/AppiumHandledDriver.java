@@ -36,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
@@ -818,6 +819,17 @@ public class AppiumHandledDriver {
      */
     public String getWindowHandle() {
         return driver.getWindowHandle();
+    }
+
+    /**
+     * Adding support to execute JavaScript codes.
+     * @param script to be executed.
+     * @return the result of the execution.
+     */
+    public Object executeJavaScript(String script) {
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        Object output = jsExecutor.executeScript(script);
+        return output;
     }
 
 }
