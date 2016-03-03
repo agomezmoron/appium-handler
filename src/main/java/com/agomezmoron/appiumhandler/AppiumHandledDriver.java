@@ -61,6 +61,7 @@ import io.appium.java_client.ios.IOSDriver;
  * the app independent of the app (native or hybrid).
  * 
  * @author Alejandro Gomez <agommor@gmail.com>
+ * @author Ivan Gomez de Leon <igomez@emergya.com>
  *
  */
 public class AppiumHandledDriver {
@@ -242,7 +243,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * It checks if it's an iOS platform.
+     * It checks if it's an Android platform.
      * @param desiredCapabilities to check if the SO is iOS.
      * @return true if it's an iOS testing.
      */
@@ -375,7 +376,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#findElements(String)}.
+     * @see {@link AppiumDriver#findElementsById(String)}.
      */
     public List<MobileElement> findElementsById(String id) {
         List<MobileElement> elements = null;
@@ -427,7 +428,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#findElementsByTagName(String)}.
+     * @see {@link AppiumDriver#findElementsByName(String)}.
      */
     public List<MobileElement> findElementsByName(String using) {
         List<MobileElement> elements = null;
@@ -466,7 +467,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#findElementsByCssSelector(String)}.
+     * @see {@link AppiumDriver#findElementsByXPath(String)}.
      */
     public List<MobileElement> findElementsByXPath(String using) {
         List<MobileElement> elements = null;
@@ -479,7 +480,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#findElementsByCssSelector(String)}.
+     * @see {@link AppiumDriver#findElementsByAccessibilityId(String)}.
      */
     public List<MobileElement> findElementsByAccessibilityId(String using) {
         List<MobileElement> elements = null;
@@ -640,7 +641,7 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#pullFile(String)}.
+     * @see {@link AppiumDriver#pullFolder(String)}.
      */
     public byte[] pullFolder(String remotePath) {
         return driver.pullFolder(remotePath);
@@ -658,6 +659,15 @@ public class AppiumHandledDriver {
      */
     public void performMultiTouchAction(MultiTouchAction multiAction) {
         driver.performMultiTouchAction(multiAction);
+    }
+
+    /**
+     * This method is the same than {@link AppiumHandledDriver#tap(int, WebElement, int)} but using a {@link MobileElement} object.
+     */
+    public void tap(int fingers, MobileElement element, int duration) {
+        int xPosition = element.getLocation().getX() + element.getSize().getWidth()/2;
+        int yPosition = element.getLocation().getY() + element.getSize().getHeight()/2;
+        this.tap(fingers, xPosition, yPosition, duration);
     }
 
     /**
