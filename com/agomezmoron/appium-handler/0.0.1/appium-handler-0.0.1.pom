@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.agomezmoron</groupId>
 	<artifactId>appium-handler</artifactId>
-	<version>0.0.2-SANPSHOT</version>
+	<version>0.0.1</version>
 	<name>Appium handler</name>
 	<packaging>jar</packaging>
 
@@ -34,11 +34,6 @@
 			<id>Alejandro</id>
 			<name>Alejandro Gomez</name>
 			<email>agommor@gmail.com</email>
-		</developer>
-		<developer>
-			<id>Ivan</id>
-			<name>Ivan Gomez de Leon</name>
-			<email>igomez@emergya.com</email>
 		</developer>
 	</developers>
 
