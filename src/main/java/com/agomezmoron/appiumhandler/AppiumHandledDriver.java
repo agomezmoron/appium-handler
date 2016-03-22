@@ -279,12 +279,13 @@ public class AppiumHandledDriver {
     public void waitFor(By selector, long seconds, String message) {
         LOGGER.info("Waiting for " + selector.toString());
         long start = new Date().getTime();
-        long end = new Date().getTime();
+        long end = start +  (seconds * 1000);
+        long now = new Date().getTime();
         MobileElement element = null;
         do {
             element = this.findElement(selector);
-            end = new Date().getTime();
-        } while (element == null && (start + (seconds * 1000)) <= end);
+            now = new Date().getTime();
+        } while (element == null && now <= end);
 
         if (element == null) {
             if (message != null && "".equals(message.trim())) {
