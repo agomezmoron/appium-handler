@@ -284,7 +284,7 @@ public class AppiumHandledDriver {
         do {
             element = this.findElement(selector);
             end = new Date().getTime();
-        } while (element == null && (start + (seconds * 1000)) > end);
+        } while (element == null && (start + (seconds * 1000)) <= end);
 
         if (element == null) {
             if (message != null && "".equals(message.trim())) {
@@ -665,8 +665,8 @@ public class AppiumHandledDriver {
      * This method is the same than {@link AppiumHandledDriver#tap(int, WebElement, int)} but using a {@link MobileElement} object.
      */
     public void tap(int fingers, MobileElement element, int duration) {
-        int xPosition = element.getLocation().getX() + element.getSize().getWidth()/2;
-        int yPosition = element.getLocation().getY() + element.getSize().getHeight()/2;
+        int xPosition = element.getLocation().getX() + element.getSize().getWidth() / 2;
+        int yPosition = element.getLocation().getY() + element.getSize().getHeight() / 2;
         this.tap(fingers, xPosition, yPosition, duration);
     }
 
