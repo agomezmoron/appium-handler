@@ -3,9 +3,10 @@
   <groupId>com.agomezmoron</groupId>
   <artifactId>appium-handler</artifactId>
   <versioning>
+    <release>0.0.2-SANPSHOT</release>
     <versions>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.2-SANPSHOT</version>
     </versions>
-    <lastUpdated>20160322162158</lastUpdated>
+    <lastUpdated>20160322164154</lastUpdated>
   </versioning>
 </metadata>
