@@ -55,6 +55,7 @@ import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.remote.MobileCapabilityType;
 
 /**
  * Appium handler driver to work with any appium implementation iOS/Android and working with
@@ -138,6 +139,7 @@ public class AppiumHandledDriver {
         driver.manage().timeouts().implicitlyWait(35, TimeUnit.SECONDS);
         Boolean isHybrid = false;
         Object appHybrid = desiredCapabilities.getCapability(APP_HYBRID);
+        desiredCapabilities.setCapability(MobileCapabilityType.TAKES_SCREENSHOT, "true");
         if (appHybrid != null && appHybrid instanceof Boolean) {
             isHybrid = (Boolean) appHybrid;
             if (isHybrid) {
@@ -279,7 +281,7 @@ public class AppiumHandledDriver {
     public void waitFor(By selector, long seconds, String message) {
         LOGGER.info("Waiting for " + selector.toString());
         long start = new Date().getTime();
-        long end = start +  (seconds * 1000);
+        long end = start + (seconds * 1000);
         long now = new Date().getTime();
         MobileElement element = null;
         do {
@@ -842,7 +844,7 @@ public class AppiumHandledDriver {
         Object output = jsExecutor.executeScript(script);
         return output;
     }
-    
+
     /**
      * Providing a way to get the native driver.
      * @return the native {@link AppiumDriver} instance.
