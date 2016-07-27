@@ -842,5 +842,13 @@ public class AppiumHandledDriver {
         Object output = jsExecutor.executeScript(script);
         return output;
     }
+    
+    /**
+     * Providing a way to get the native driver.
+     * @return the native {@link AppiumDriver} instance.
+     */
+    public AppiumDriver<MobileElement> getDriver() {
+        return driver;
+    }
 
 }
