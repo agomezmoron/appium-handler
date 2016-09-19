@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -730,13 +731,6 @@ public class AppiumHandledDriver {
     }
 
     /**
-     * @see {@link AppiumDriver#lockScreen(int)}.
-     */
-    public void lockScreen(int seconds) {
-        driver.lockScreen(seconds);
-    }
-
-    /**
      * @see {@link AppiumDriver#context(String)}.
      */
     public WebDriver context(String name) {
@@ -788,15 +782,15 @@ public class AppiumHandledDriver {
     /**
      * @see {@link AppiumDriver#getAppStrings()}.
      */
-    public String getAppStrings() {
-        return driver.getAppStrings();
+    public Map<String, String> getAppStrings() {
+        return driver.getAppStringMap();
     }
 
     /**
      * @see {@link AppiumDriver#getAppStrings(String)}.
      */
-    public String getAppStrings(String language) {
-        return driver.getAppStrings(language);
+    public Map<String, String> getAppStringMap(String language) {
+        return driver.getAppStringMap(language);
     }
 
     /**
